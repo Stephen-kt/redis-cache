@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ke.rediscache.mapper.UserLoginMapper">
+
+    <resultMap id="BaseResultMap" type="com.ke.rediscache.entity.UserLogin">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="userPassword" column="user_password" jdbcType="VARCHAR"/>
+        <result property="userPermissions" column="user_permissions" jdbcType="VARCHAR"/>
+        <result property="modifyDate" column="modify_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+            id,user_name,user_password,
+            user_permissions,modify_date
+    </sql>
+
+    <!-- <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap"> -->
+    <!--     select * -->
+    <!--     from user_login -->
+    <!--     where id = #{id} -->
+    <!-- </select> -->
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from user_login
+        where  id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ke.rediscache.entity.UserLogin" useGeneratedKeys="true">
+        insert into user_login
+        ( id,user_name,user_password
+        ,user_permissions,modify_date)
+        values (#{id,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR},#{userPassword,jdbcType=VARCHAR}
+               ,#{userPermissions,jdbcType=VARCHAR},#{modifyDate,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ke.rediscache.entity.UserLogin" useGeneratedKeys="true">
+        insert into user_login
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="userPassword != null">user_password,</if>
+            <if test="userPermissions != null">user_permissions,</if>
+            <if test="modifyDate != null">modify_date,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=INTEGER},</if>
+            <if test="userName != null">#{userName,jdbcType=VARCHAR},</if>
+            <if test="userPassword != null">#{userPassword,jdbcType=VARCHAR},</if>
+            <if test="userPermissions != null">#{userPermissions,jdbcType=VARCHAR},</if>
+            <if test="modifyDate != null">#{modifyDate,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ke.rediscache.entity.UserLogin">
+        update user_login
+        <set>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userPassword != null">
+                user_password = #{userPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="userPermissions != null">
+                user_permissions = #{userPermissions,jdbcType=VARCHAR},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where   id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ke.rediscache.entity.UserLogin">
+        update user_login
+        set
+            user_name =  #{userName,jdbcType=VARCHAR},
+            user_password =  #{userPassword,jdbcType=VARCHAR},
+            user_permissions =  #{userPermissions,jdbcType=VARCHAR},
+            modify_date =  #{modifyDate,jdbcType=TIMESTAMP}
+        where   id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_login
+    </select>
+</mapper>
