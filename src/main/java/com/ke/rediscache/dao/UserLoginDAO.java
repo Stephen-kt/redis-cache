@@ -41,7 +41,7 @@ public class UserLoginDAO {
 
     @CacheEvict(key = "'id-' + #id")
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.NESTED)
-    public int deleteByPrimaryKey(Long id) throws Exception {
+    public int deleteByPrimaryKey(Long id) {
         System.out.println("deleteByPrimaryKey被执行了");
         redisTemplate.delete(Redis.PREFIX.getKey() + Redis.User.getKey());
         //noinspection UnnecessaryLocalVariable

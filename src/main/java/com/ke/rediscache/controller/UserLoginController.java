@@ -22,7 +22,7 @@ public class UserLoginController {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private final UserLoginDAO userLoginDAO;
+    public final UserLoginDAO userLoginDAO;
 
     public UserLoginController(RedisTemplate<String, Object> redisTemplate, UserLoginDAO userLoginDAO) {
         this.redisTemplate = redisTemplate;
