@@ -2,6 +2,7 @@ package com.ke.rediscache.entity;
 
 import java.io.Serializable;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 用户登录表
@@ -9,6 +10,7 @@ import lombok.Data;
  * @TableName user_login
  */
 @Data
+@Accessors(chain = true)
 public class UserLogin implements Serializable {
 
     private static final long serialVersionUID = 1L;
