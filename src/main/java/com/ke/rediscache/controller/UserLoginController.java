@@ -3,11 +3,13 @@ package com.ke.rediscache.controller;
 import com.ke.rediscache.constant.Redis;
 import com.ke.rediscache.dao.UserLoginDAO;
 import com.ke.rediscache.entity.UserLogin;
-import com.ke.rediscache.http.ResponseEntity;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserLoginController {
 
-    private final RedisTemplate<String, Object> redisTemplate;
-
     public final UserLoginDAO userLoginDAO;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public UserLoginController(RedisTemplate<String, Object> redisTemplate, UserLoginDAO userLoginDAO) {
         this.redisTemplate = redisTemplate;
@@ -32,26 +33,30 @@ public class UserLoginController {
     @PostMapping("selectAll")
     public ResponseEntity<?> selectAll() {
         final List<UserLogin> userLogins = userLoginDAO.selectAll();
-        return ResponseEntity.ok(200, "ok", userLogins);
+        return ResponseEntity.ok(userLogins);
     }
 
     @GetMapping("queryById")
     public ResponseEntity<?> getUserById(Long id) {
         final UserLogin userLogin = userLoginDAO.selectByPrimaryKey(id);
-        return ResponseEntity.ok(200, "ok", userLogin);
+        return ResponseEntity.ok(userLogin);
     }
 
+    @Transactional(transactionManager = "mysqlTransactionManager",
+        rollbackFor = Exception.class,
+        propagation = Propagation.NESTED
+    )
     @PostMapping("insert")
     public ResponseEntity<?> insert(@RequestBody UserLogin userLogin) {
         userLoginDAO.insert(userLogin);
-        return ResponseEntity.ok(200, "ok");
+        return ResponseEntity.ok().build();
     }
 
 
     @PostMapping("updateBySeclective")
     public ResponseEntity<?> updateBySelective(@RequestBody UserLogin userLogin) {
         final UserLogin userLogins = userLoginDAO.updateByPrimaryKeySelective(userLogin);
-        return ResponseEntity.ok(200, "ok", userLogins);
+        return ResponseEntity.ok(userLogins);
     }
 
     @PostMapping("deserial")
@@ -60,14 +65,12 @@ public class UserLoginController {
         final List<Object> userLogins;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(redisKey))) {
             userLogins = Collections.singletonList(redisTemplate.opsForValue().get(redisKey));
-        }else {
+        } else {
             userLogins = Collections.singletonList(userLoginDAO.selectAll());
         }
         userLogins.forEach(System.out::println);
         return userLogins;
     }
-
-
 
     @PostMapping("testTranscation")
     public void testTranscation(@RequestBody UserLogin userLogin) throws Exception {

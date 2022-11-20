@@ -1,42 +1,46 @@
-spring:
+spring :
   datasource:
-    type    : com.alibaba.druid.pool.DruidDataSource
+    type : com.alibaba.druid.pool.DruidDataSource
     druid:
-      driverClassName                  : "com.mysql.cj.jdbc.Driver"
-      url                              : "jdbc:mysql://localhost:3306/UserLogin"
-      username                         : "root"
-      password                         : "958823"
-      initial-size                     : 2
-      min-idle                         : 5
-      max-active                       : 10
-      max-wait                         : 60000
-      validation-query                 : SELECT 1
-      min-evictable-idle-time-millis   : 600000
-      max-evictable-idle-time-millis   : 900000
-      test-on-return                   : true
-      test-on-borrow                   : true
-      test-while-idle                  : true
-      time-between-eviction-runs-millis: 2000
-      validation-query-timeout         : 30
-      query-timeout                    : 100000
-      poolPreparedStatements           : true
-      keepAlive                        : true
+      main             :
+        driverClassName                  : "com.mysql.cj.jdbc.Driver"
+        url                              : "jdbc:mysql://localhost:3306/UserLogin"
+        username                         : "root"
+        password                         : "958823"
+        initial-size                     : 2
+        min-idle                         : 5
+        max-active                       : 10
+        max-wait                         : 60000
+        validation-query                 : SELECT 1
+        min-evictable-idle-time-millis   : 600000
+        max-evictable-idle-time-millis   : 900000
+        test-on-return                   : true
+        test-on-borrow                   : true
+        test-while-idle                  : true
+        time-between-eviction-runs-millis: 2000
+        validation-query-timeout         : 30
+        query-timeout                    : 100000
+        poolPreparedStatements           : true
+        keepAlive                        : true
+        filters                          : stat,wall
 
-  cache:
-    type : redis
-    redis:
-      key-prefix    : "redis-cache1232131:"
-      use-key-prefix: true
-  redis:
-    database   : 0
-    host       : localhost
-    port       : 6380
-    password   : 958823
+      web-stat-filter  :
+        enabled               : true
+        session-stat-enable   : true
+        session-stat-max-count: 1000
+        url-pattern           : /*
+        exclusions            : "*.js,*.html,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
 
-mybatis:
-  mapper-locations: classpath:mybatis/mapper/*.xml
-  configuration   :
-    map-underscore-to-camel-case: true
-    cache-enabled: true
-    log-impl     : org.apache.ibatis.logging.slf4j.Slf4jImpl
+      stat-view-servlet:
+        enabled     : true
+        url-pattern : /druid/*
+        reset-enable: false
+      aop-patterns     : com.ke.rediscache.mapper.*
 
+  cache     :
+    type: redis
+  redis     :
+    database: 0
+    host    : localhost
+    port    : 6380
+    password: 958823
